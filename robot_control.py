@@ -3,8 +3,7 @@ import curses
 from datetime import datetime
 from picamera import PiCamera
 from time import sleep
-
-pwmOffset = 0
+from motorcontroller import MotorController
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(5, GPIO.OUT)
@@ -16,14 +15,9 @@ GPIO.setup(38, GPIO.OUT)
 GPIO.setup(40, GPIO.OUT)
 GPIO.setup(32, GPIO.OUT)
 
-GPIO.setup(8, GPIO.OUT)
-GPIO.setup(10, GPIO.OUT)
-
 GPIO.setup(37, GPIO.OUT)
 
-pwm1 = GPIO.PWM(8, 200)
-pwm2 = GPIO.PWM(10, 200)
-ledLights = GPIO.PWM(36, 5000)
+ledLights = GPIO.PWM(36, 10000)
 servo1 = GPIO.PWM(38, 50)
 servo2 = GPIO.PWM(40, 50)
 
@@ -40,13 +34,7 @@ curses.noecho()
 curses.cbreak()
 screen.keypad(True)    
 
-motorSpeed = 100
 
-def changeMotorSpeed(speedPerc):
-    global motorSpeed
-    motorSpeed = speedPerc
-    pwm1.ChangeDutyCycle(motorSpeed+pwmOffset)
-    pwm2.ChangeDutyCycle(motorSpeed)
 
 def offsetServoCycle(motor1, motor2):
     global servo1DutyCycle
@@ -74,11 +62,8 @@ def disableServos():
     servo2.ChangeDutyCycle(0)
 
 try:
-    pwm1.start(motorSpeed)
-    pwm2.start(motorSpeed)
 
-
-    
+    motorcontroller = MotorController()
 
     servo1.start(servo1DutyCycle)
     servo2.start(servo2DutyCycle)
@@ -99,58 +84,33 @@ try:
             GPIO.output(15, GPIO.LOW)
             break
         elif char == ord('w'):            
-            GPIO.output(5, GPIO.LOW)
-            GPIO.output(11, GPIO.HIGH)
-            GPIO.output(13, GPIO.HIGH)
-            GPIO.output(15, GPIO.LOW)
+            motorcontroller.moveforward()
         elif char == ord('s'):            
-            GPIO.output(5, GPIO.HIGH)
-            GPIO.output(11, GPIO.LOW)
-            GPIO.output(13, GPIO.LOW)
-            GPIO.output(15, GPIO.HIGH)
+            motorcontroller.movebackward()
         elif char == ord('a'):            
-            GPIO.output(5, GPIO.LOW)
-            GPIO.output(11, GPIO.HIGH)
-            GPIO.output(13, GPIO.LOW)
-            GPIO.output(15, GPIO.LOW)
+            motorcontroller.moveleft()
         elif char == ord('d'):            
-            GPIO.output(5, GPIO.LOW)
-            GPIO.output(11, GPIO.LOW)
-            GPIO.output(13, GPIO.HIGH)
-            GPIO.output(15, GPIO.LOW)    
+            motorcontroller.moveright()
         elif char == ord('e'):            
-            GPIO.output(5, GPIO.LOW)
-            GPIO.output(11, GPIO.LOW)
-            GPIO.output(13, GPIO.LOW)
-            GPIO.output(15, GPIO.LOW)
+            motorcontroller.stop()
         elif char == ord('z'):            
-            GPIO.output(5, GPIO.LOW)
-            GPIO.output(11, GPIO.HIGH)
-            GPIO.output(13, GPIO.LOW)
-            GPIO.output(15, GPIO.HIGH)
+            motorcontroller.movehardleft()
         elif char == ord('c'):            
-            GPIO.output(5, GPIO.HIGH)
-            GPIO.output(11, GPIO.LOW)
-            GPIO.output(13, GPIO.HIGH)
-            GPIO.output(15, GPIO.LOW)    
+            motorcontroller.movehardright()
         elif char == ord('1'):
-            changeMotorSpeed(20)            
+            motorcontroller.setmotorspeed(20)
         elif char == ord('2'):
-            changeMotorSpeed(40)
+            motorcontroller.setmotorspeed(40)
         elif char == ord('3'):
-            changeMotorSpeed(60)
+            motorcontroller.setmotorspeed(60)
         elif char == ord('4'):
-            changeMotorSpeed(80)
+            motorcontroller.setmotorspeed(80)
         elif char == ord('5'):
-            changeMotorSpeed(100)
+            motorcontroller.setmotorspeed(100)
         elif char == ord(','):
-            if motorSpeed > 0:
-                motorSpeed = motorSpeed - 2
-                changeMotorSpeed(motorSpeed)
+            motorcontroller.offsetmotorspeed(-5)
         elif char == ord('.'):
-            if motorSpeed < 100:
-                motorSpeed = motorSpeed + 2
-                changeMotorSpeed(motorSpeed)
+            motorcontroller.offsetmotorspeed(+5)
         elif char == ord('h'):
             pwmHorn.start(50)
         elif char == ord('j'):
@@ -197,5 +157,5 @@ try:
 finally:
     curses.nocbreak(); screen.keypad(0); curses.echo()
     curses.endwin()
-    camera.stop_preview()
+    #camera.stop_preview()
     GPIO.cleanup()
