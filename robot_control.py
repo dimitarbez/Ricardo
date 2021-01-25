@@ -108,9 +108,9 @@ try:
         elif char == ord('5'):
             motorcontroller.setmotorspeed(100)
         elif char == ord(','):
-            motorcontroller.offsetmotorspeed(-2)
+            motorcontroller.offsetmotorspeed(-5)
         elif char == ord('.'):
-            motorcontroller.offsetmotorspeed(+2)
+            motorcontroller.offsetmotorspeed(+5)
         elif char == ord('h'):
             pwmHorn.start(50)
         elif char == ord('j'):
@@ -157,5 +157,5 @@ try:
 finally:
     curses.nocbreak(); screen.keypad(0); curses.echo()
     curses.endwin()
-    camera.stop_preview()
+    #camera.stop_preview()
     GPIO.cleanup()
