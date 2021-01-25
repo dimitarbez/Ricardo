@@ -17,7 +17,7 @@ GPIO.setup(32, GPIO.OUT)
 
 GPIO.setup(37, GPIO.OUT)
 
-ledLights = GPIO.PWM(36, 5000)
+ledLights = GPIO.PWM(36, 10000)
 servo1 = GPIO.PWM(38, 50)
 servo2 = GPIO.PWM(40, 50)
 
