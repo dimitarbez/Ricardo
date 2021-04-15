@@ -47,13 +47,13 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	#for each face, draw a green rectangle around it and append to the image
 	for(x,y,w,h) in faces:
 		cv.rectangle(image, (x,y), (x+w, y+h), (0,255,0),2)
-		if x < 100:
+		if x < 50:
 			# within the left region
 			print('Motor speed:', (100 - x)/2)
 			motor_controller.setmotorspeed((100 - x)/2)
 			motor_controller.movehardleft()
 			print('left')
-		elif x + w > image.shape[1] - 100:
+		elif x + w > image.shape[1] - 50:
 			# within the right region
 			print('Motor speed:', ((x + w) + 100 - image.shape[1])/2)
 			motor_controller.setmotorspeed(((x + w) + 100 - image.shape[1])/2)
@@ -61,13 +61,13 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 			print('right')
 		else:
 			print('center')
-			area = ((x + w) ** 2)
+			area = (w ** 2)
 			print(area)
-			if area > 50000:
-				motor_controller.setmotorspeed(80)
+			if area > 3000:
+				motor_controller.setmotorspeed(50)
 				motor_controller.movebackward()
-			elif area < 30000:
-				motor_controller.setmotorspeed(80)
+			elif area < 2000:
+				motor_controller.setmotorspeed(50)
 				motor_controller.moveforward()
 			else:
 				motor_controller.stop()
