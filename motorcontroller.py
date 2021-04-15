@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 class MotorController:
 
     def __init__(self):
+        GPIO.setmode(GPIO.BOARD)
         GPIO.setup(8, GPIO.OUT)
         GPIO.setup(10, GPIO.OUT)
         self.pwm1 = GPIO.PWM(8, 200)
