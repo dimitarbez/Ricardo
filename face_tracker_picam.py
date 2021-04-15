@@ -62,6 +62,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		else:
 			print('center')
 			area = ((x + w) ** 2)
+			print(area)
 			if area > 50000:
 				motor_controller.setmotorspeed(80)
 				motor_controller.movebackward()
