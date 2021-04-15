@@ -1,6 +1,9 @@
 #import required libraries
+from motorcontroller import MotorController
 import time
 import cv2 as cv
+import numpy as np
+from motorcontroller import MotorController
 
 #if using the picamera, import those libraries as well
 from picamera.array import PiRGBArray
@@ -20,6 +23,15 @@ rawCapture = PiRGBArray(camera, size=(320, 240))
 time.sleep(0.1)
 
 # start video frame capture
+#cap = cv.VideoCapture(0)
+#cap.set(cv.CAP_PROP_FRAME_WIDTH, 320)
+#cap.set(cv.CAP_PROP_FRAME_HEIGHT, 240)
+
+motor_controller = MotorController()
+
+#while True:
+	#ret, image = cap.read()
+
 for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 	# take the frame as an array, convert it to black and white, and look for facial features
 	image = still.array
@@ -29,16 +41,25 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		scaleFactor = 1.1,
 		minNeighbors = 5,
 		minSize=(30, 30),
-		flags = cv.cv.CV_HAAR_SCALE_IMAGE
+		flags = cv.CASCADE_SCALE_IMAGE
 	)
 
 	#for each face, draw a green rectangle around it and append to the image
 	for(x,y,w,h) in faces:
 		cv.rectangle(image, (x,y), (x+w, y+h), (0,255,0),2)
-		if x - image.shape[1] < 30:
+		if x < 50:
+			motor_controller.movehardleft()
 			print('left')
-		elif x + w > image.shape[1] - 30:
+		elif x + w > image.shape[1] - 50:
+			motor_controller.movehardright()
 			print('right')
+		else:
+			motor_controller.stop()
+			print('center')
+		#time.sleep(0.2)
+		#print((x + w) ** 2)
+		# 50000
+		# 30000
 
 	#display the resulting image
 	cv.imshow("Display", image)
