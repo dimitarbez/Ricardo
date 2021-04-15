@@ -6,6 +6,10 @@ class MotorController:
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(8, GPIO.OUT)
         GPIO.setup(10, GPIO.OUT)
+        GPIO.setup(5, GPIO.OUT)
+        GPIO.setup(11, GPIO.OUT)
+        GPIO.setup(13, GPIO.OUT)
+        GPIO.setup(15, GPIO.OUT)
         self.pwm1 = GPIO.PWM(8, 200)
         self.pwm2 = GPIO.PWM(10, 200)
         self.motorspeed = 50
