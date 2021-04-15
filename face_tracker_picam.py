@@ -49,11 +49,13 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		cv.rectangle(image, (x,y), (x+w, y+h), (0,255,0),2)
 		if x < 100:
 			# within the left region
+			print('Motor speed:', 100 - x)
 			motor_controller.setmotorspeed(100 - x)
 			motor_controller.movehardleft()
 			print('left')
 		elif x + w > image.shape[1] - 100:
 			# within the right region
+			print('Motor speed:', x - image.shape[1] - 100)
 			motor_controller.setmotorspeed(x - image.shape[1] - 100)
 			motor_controller.movehardright()
 			print('right')
