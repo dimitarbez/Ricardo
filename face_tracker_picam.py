@@ -1,9 +1,7 @@
 #import required libraries
-from numpy.lib.type_check import imag
 from motorcontroller import MotorController
 import time
 import cv2 as cv
-import numpy as np
 from motorcontroller import MotorController
 
 #if using the picamera, import those libraries as well
@@ -19,6 +17,10 @@ camera = PiCamera()
 camera.resolution = (400, 300) #a smaller resolution means faster processing
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(400, 300))
+
+side_borders_distance = 100
+max_tracking_area = 2000
+min_tracking_area = 1400
 
 #give camera time to warm up
 time.sleep(0.1)
@@ -51,8 +53,8 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	#for each face, draw a green rectangle around it and append to the image
 	for(x,y,w,h) in faces:
 
-		x_in_left = (x < 100)
-		x_in_right = (x + w > image.shape[1] - 100)
+		x_in_left = (x < side_borders_distance)
+		x_in_right = (x + w > image.shape[1] - side_borders_distance)
 
 		cv.rectangle(image, (x,y), (x+w, y+h), (0,255,0),2)
 
@@ -60,37 +62,33 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 		if x_in_left and not x_in_right:
 			# within the left region
-			motor_controller.setmotorspeed(30 + (100 - x)/2)
+			left_motorspeed = ((x - image.shape[1] / 2) / (image.shape[1] / 2) * (-100))
+			motor_controller.setmotorspeed(left_motorspeed)
 			motor_controller.movehardleft()
 			print('left')
 		elif x_in_right and not x_in_left:
 			# within the right region
-			motor_controller.setmotorspeed(30 + ((x + w) + 100 - image.shape[1])/2)
+			right_motorspeed = ((x + w) - (image.shape[1] / 2) / (image.shape[1] / 2) * 10)
+			motor_controller.setmotorspeed(right_motorspeed)
 			motor_controller.movehardright()
 			print('right')
 		elif (x_in_left and x_in_right) or not (x_in_left and x_in_right):
 			print('center')
 			area = (w ** 2)
 			print(area)
-			if area > 2000:
+			if area > max_tracking_area:
 				motor_controller.setmotorspeed(50)
 				motor_controller.movebackward()
-			elif area < 1400:
+			elif area < min_tracking_area:
 				motor_controller.setmotorspeed(50)
 				motor_controller.moveforward()
 			else:
 				motor_controller.stop()
 						
-		#time.sleep(0.2)
-		#print((x + w) ** 2)
-		# 50000
-		# 30000
-
-	#motor_controller.stop()
 
 	#display the resulting image
-	cv.line(image, (100, 0), (100, image.shape[0]), (0, 0, 255), 5)
-	cv.line(image, (image.shape[1] - 100, 0), (image.shape[1] - 100, image.shape[0]), (0, 0, 255), 5)
+	cv.line(image, (side_borders_distance, 0), (side_borders_distance, image.shape[0]), (0, 0, 255), 5)
+	cv.line(image, (image.shape[1] - side_borders_distance, 0), (image.shape[1] - side_borders_distance, image.shape[0]), (0, 0, 255), 5)
 
 	cv.imshow("Display", image)
 
