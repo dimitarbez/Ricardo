@@ -2,7 +2,6 @@
 from motorcontroller import MotorController
 import time
 import cv2 as cv
-from motorcontroller import MotorController
 
 #if using the picamera, import those libraries as well
 from picamera.array import PiRGBArray
@@ -26,14 +25,14 @@ min_tracking_area = 1400
 time.sleep(0.1)
 
 # start video frame capture
-#cap = cv.VideoCapture(0)
-#cap.set(cv.CAP_PROP_FRAME_WIDTH, 320)
-#cap.set(cv.CAP_PROP_FRAME_HEIGHT, 240)
+# cap = cv.VideoCapture(0)
+# cap.set(cv.CAP_PROP_FRAME_WIDTH, 400)
+# cap.set(cv.CAP_PROP_FRAME_HEIGHT, 300)
 
 motor_controller = MotorController()
 
-#while True:
-	#ret, image = cap.read()
+# while True:
+# 	ret, image = cap.read()
 
 for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 	# take the frame as an array, convert it to black and white, and look for facial features
@@ -57,18 +56,20 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		x_in_right = (x + w > image.shape[1] - side_borders_distance)
 
 		cv.rectangle(image, (x,y), (x+w, y+h), (0,255,0),2)
-
+		time.sleep(0.1)
 		print('Motor speed:', motor_controller.motorspeed)
 
 		if x_in_left and not x_in_right:
 			# within the left region
 			left_motorspeed = ((x - image.shape[1] / 2) / (image.shape[1] / 2) * (-100))
+			print(left_motorspeed)
 			motor_controller.setmotorspeed(left_motorspeed)
 			motor_controller.movehardleft()
 			print('left')
 		elif x_in_right and not x_in_left:
 			# within the right region
-			right_motorspeed = ((x + w) - (image.shape[1] / 2) / (image.shape[1] / 2) * 10)
+			right_motorspeed = (((x + w) - (image.shape[1] / 2)) / (image.shape[1] / 2) * 100)
+			print(right_motorspeed)
 			motor_controller.setmotorspeed(right_motorspeed)
 			motor_controller.movehardright()
 			print('right')
