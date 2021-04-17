@@ -1,4 +1,5 @@
 #import required libraries
+from numpy.lib.type_check import imag
 from motorcontroller import MotorController
 import time
 import cv2 as cv
@@ -84,6 +85,9 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	#motor_controller.stop()
 
 	#display the resulting image
+	cv.line(image, (50, 0), (50, image.shape[0]), (255, 0, 0), 5)
+	cv.line(image, (50, 0), (image.shape[1] - 50, image.shape[0]), (255, 0, 0), 5)
+
 	cv.imshow("Display", image)
 
 	# clear the stream capture
