@@ -2,6 +2,7 @@
 from motorcontroller import MotorController
 import time
 import cv2 as cv
+import numpy as np
 
 #if using the picamera, import those libraries as well
 from picamera.array import PiRGBArray
@@ -62,6 +63,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		if x_in_left and not x_in_right:
 			# within the left region
 			left_motorspeed = ((x - image.shape[1] / 2) * (-100) / (image.shape[1] / 2))
+			np.clip(left_motorspeed, 25, 80)
 			print(left_motorspeed)
 			motor_controller.setmotorspeed(left_motorspeed)
 			motor_controller.movehardleft()
@@ -69,6 +71,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		elif x_in_right and not x_in_left:
 			# within the right region
 			right_motorspeed = (((x + w) - (image.shape[1] / 2)) * 100 / (image.shape[1] / 2))
+			np.clip(right_motorspeed, 25, 80)
 			print(right_motorspeed)
 			motor_controller.setmotorspeed(right_motorspeed)
 			motor_controller.movehardright()
