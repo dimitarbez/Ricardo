@@ -61,14 +61,14 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 		if x_in_left and not x_in_right:
 			# within the left region
-			left_motorspeed = ((x - image.shape[1] / 2) / (image.shape[1] / 2) * (-100))
+			left_motorspeed = ((x - image.shape[1] / 2) * (-100) / (image.shape[1] / 2))
 			print(left_motorspeed)
 			motor_controller.setmotorspeed(left_motorspeed)
 			motor_controller.movehardleft()
 			print('left')
 		elif x_in_right and not x_in_left:
 			# within the right region
-			right_motorspeed = (((x + w) - (image.shape[1] / 2)) / (image.shape[1] / 2) * 100)
+			right_motorspeed = (((x + w) - (image.shape[1] / 2)) * 100 / (image.shape[1] / 2))
 			print(right_motorspeed)
 			motor_controller.setmotorspeed(right_motorspeed)
 			motor_controller.movehardright()
