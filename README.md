@@ -19,6 +19,9 @@
   In the user driven scripts (ex: robot_control.py) the user inputs commands in order to
   control the robot. In the AI driven scripts the AI controls the robot either entirely or lets
   the user also have some control.
+  
+  #### 2. Physical architecture
+  Ricardo's "_brain_" is a Raspberry Pi. It controls all of the parts.
 
 ### 3. Functionalities and logic
     
