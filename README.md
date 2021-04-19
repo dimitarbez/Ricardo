@@ -23,7 +23,7 @@
   #### 2. Physical architecture
   Ricardo's "_brain_" is a Raspberry Pi. It controls all of the parts. The Raspberry Pi either 
   connects to a WiFi router or it just becomes a hotspot and devices can connect to it in order
-  to run the scripts. The robot has four motors that drive the two tank tracks. These motors
+  to envoke the scripts via ssh or vnc. The robot has four motors that drive the two tank tracks. These motors
   are driven by the L298N motor driver which gets inputs from the Raspberry Pi directly.
   For vision the robot uses the Pi Camera module mounted on a camera rotating system driven by
   two servo motors.
