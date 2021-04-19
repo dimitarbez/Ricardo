@@ -21,7 +21,17 @@
   the user also have some control.
   
   #### 2. Physical architecture
-  Ricardo's "_brain_" is a Raspberry Pi. It controls all of the parts.
+  Ricardo's "_brain_" is a Raspberry Pi. It controls all of the parts. The Raspberry Pi either 
+  connects to a WiFi router or it just becomes a hotspot and devices can connect to it in order
+  to run the scripts. The robot has four motors that drive the two tank tracks. These motors
+  are driven by the L298N motor driver which gets inputs from the Raspberry Pi directly.
+  For vision the robot uses the Pi Camera module mounted on a camera rotating system driven by
+  two servo motors.
+  The robot also has accessories such as front lights and a horn (more accessories can be added)
+  The Raspberry Pi and the accessories (including camera rotation servos) are powered on a 
+  20000 mAh power bank. Everything on the robot is powered with the power bank except the four
+  motors which are used for movement. Those are powered on 2x18650 batteries in serial which
+  is 7.4 V
 
 ### 3. Functionalities and logic
     
