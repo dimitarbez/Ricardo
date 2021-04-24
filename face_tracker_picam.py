@@ -18,22 +18,23 @@ camera.resolution = (400, 300) #a smaller resolution means faster processing
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(400, 300))
 
+# set the distance between the edge of the screen
+# and the borders that trigger robot rotation
 side_borders_distance = 150
-max_tracking_area = 2000
-min_tracking_area = 1600
+
+# face tracking area thresholds are used for forward/backward movement of the robot
+# max square area threshold for face tracking
+max_face_tracking_area = 2000
+# min square area threshold for face tracking
+min_face_tracking_area = 1600
+
+tracked_face_color = (0, 255, 0)
+side_border_color = (0, 0, 255)
 
 # give camera time to warm up
 time.sleep(0.1)
 
-# start video frame capture
-# cap = cv.VideoCapture(0)
-# cap.set(cv.CAP_PROP_FRAME_WIDTH, 400)
-# cap.set(cv.CAP_PROP_FRAME_HEIGHT, 300)
-
 motor_controller = MotorController()
-
-# while True:
-#     ret, image = cap.read()
 
 for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     # take the frame as an array, convert it to black and white, and look for facial features
@@ -51,15 +52,18 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     	motor_controller.stop()
 
     # for each face, draw a green rectangle around it and append to the image
+    # x-pos, y-pos, width, height
     for(x, y, w, h) in faces:
 
-        x_in_right = (x + w > image.shape[1] - side_borders_distance)
-        x_in_left = (x < side_borders_distance)
+        # formula for object position
+        object_in_right_area = (x + w > image.shape[1] - side_borders_distance)
+        object_in_left_area = (x < side_borders_distance)
 
-        cv.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv.rectangle(image, (x, y), (x+w, y+h), tracked_face_color, 2)
 
-        if x_in_left and not x_in_right:
-            # within the left region
+        # within the left region
+        if object_in_left_area and not object_in_right_area:
+            # interpolate motor speed from left side border to left edge of screen
             left_motorspeed = ((x - side_borders_distance) * (-100) / (side_borders_distance))
             left_motorspeed = np.clip(left_motorspeed, 35, 80)
             print(left_motorspeed)
@@ -67,8 +71,9 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             motor_controller.movehardleft()
             print('left')
 
-        elif x_in_right and not x_in_left:
-            # within the right region
+        # within the right region
+        elif object_in_right_area and not object_in_left_area:
+            # interpolate motor speed from right side border to right edge of screen
             right_motorspeed = (((x + w) - (image.shape[1] - side_borders_distance)) * 100) / side_borders_distance
             right_motorspeed = np.clip(right_motorspeed, 35, 80)
             print(right_motorspeed)
@@ -76,28 +81,27 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             motor_controller.movehardright()
             print('right')
 			
-        elif (x_in_left and x_in_right) or not (x_in_left and x_in_right):
+        elif (object_in_left_area and object_in_right_area) or not (object_in_left_area and object_in_right_area):
             print('center')
             area = (w ** 2)
             print(area)
-            if area > max_tracking_area:
+            if area > max_face_tracking_area:
+                print('move backward')
             	motor_controller.setmotorspeed(50)
             	motor_controller.movebackward()
-            elif area < min_tracking_area:
+            elif area < min_face_tracking_area:
+                print('move forward')
             	motor_controller.setmotorspeed(50)
             	motor_controller.moveforward()
             else:
-            	motor_controller.stop()
+            	motor_controller.stop()                
+                print('stop')
 
-		print('Motor speed:', motor_controller.motorspeed)
-
+    # draw side borders
+    cv.line(image, (side_borders_distance, 0), (side_borders_distance, image.shape[0]), side_border_color, 5)
+    cv.line(image, (image.shape[1] - side_borders_distance, 0), (image.shape[1] - side_borders_distance, image.shape[0]), side_border_color, 5)
 
     # display the resulting image
-    cv.line(image, (side_borders_distance, 0),
-            (side_borders_distance, image.shape[0]), (0, 0, 255), 5)
-    cv.line(image, (image.shape[1] - side_borders_distance, 0),
-            (image.shape[1] - side_borders_distance, image.shape[0]), (0, 0, 255), 5)
-
     cv.imshow("Display", image)
 
     # clear the stream capture
