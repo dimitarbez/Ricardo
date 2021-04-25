@@ -64,7 +64,7 @@
   Front LED lights | 36
   Motor 2 PWM | 10
   Motor 1 PWM | 8
-  Motor IN1 | 9
+  Motor IN1 | 5
   Motor IN2 | 11
   Motor IN3 | 13
   Motor IN4 | 15
