@@ -35,7 +35,7 @@
 
 ### 3. Functionalities and logic
   #### 1. AI driven
-  * Robot follows person by tracking their face
+  * Robot follows person by tracking their face (face_tracker_picam.py)
     * If tracked face enters left region the robot turns left
     * If tracked face enters right region the robot turns right
     * If the tracked face enters the left and right turning trigger
@@ -47,7 +47,7 @@
       threshold, then the robot drives towards the user
     
   #### 2. User driven
-  * Remote control of the robot
+  * Remote control of the robot (robot_control.py)
     * Live video preview
     * Ability to capture video
     * Ability to take pictures
