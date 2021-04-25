@@ -29,9 +29,8 @@
   two servo motors.
   The robot also has accessories such as front lights and a horn (more accessories can be added)
   The Raspberry Pi and the accessories (including camera rotation servos) are powered on a 
-  20000 mAh power bank. Everything on the robot is powered with the power bank except the four
-  motors which are used for movement. Those are powered on 2x18650 batteries in serial which
-  is 7.4 V
+  20000 mAh power bank. Everything on the robot is powered with the 5V power bank except the L298N
+  motor controller which uses 2x18650 batteries in serial (7.4V) which works well for the motors.
 
 ### 3. Functionalities and logic
   #### 1. AI driven
