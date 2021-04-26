@@ -9,7 +9,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 
 # point to the haar cascade file in the directory
-cascPath = "haarcascade.xml"
+cascPath = "./haarcascades/haarcascade_frontalface_default.xml"
 faceCascade = cv.CascadeClassifier(cascPath)
 
 # #start the camera and define settings

@@ -9,7 +9,7 @@ import cv2 as cv
 import numpy as np
 
 # point to the haar cascade file in the directory
-cascPath = "haarcascade.xml"
+cascPath = "./haarcascades/haarcascade_frontalface_default.xml"
 faceCascade = cv.CascadeClassifier(cascPath)
 
 # set the distance between the edge of the screen
