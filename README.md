@@ -1,5 +1,7 @@
 # Ricardo
 
+![Image of Yaktocat](https://github.com/dimitarbez/Ricardo/blob/master/ricardo.jpg)
+
 ### 1. Introduction
   Ricardo is an open-source robot which aim is to make replicating it an easy and fun process
   so that anyone who is interested in robotics can get into the field and progress.
