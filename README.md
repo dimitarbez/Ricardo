@@ -63,6 +63,7 @@
   ----------|---------------
   Buzzer | 37
   Front LED lights | 36
+  Laser | 32
   Motor 2 PWM | 10
   Motor 1 PWM | 8
   Motor IN1 | 5
