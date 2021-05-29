@@ -1,22 +1,16 @@
+# this is the main file for development and
+# testing features features for the robot
+# that later will be transfered to the
+# face_tracker_picam.py script
+
 # import required libraries
-from motorcontroller import MotorController
 import time
 import cv2 as cv
 import numpy as np
 
-# if using the picamera, import those libraries as well
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-
 # point to the haar cascade file in the directory
 cascPath = "./haarcascades/haarcascade_frontalface_default.xml"
 faceCascade = cv.CascadeClassifier(cascPath)
-
-# #start the camera and define settings
-camera = PiCamera()
-camera.resolution = (400, 300) #a smaller resolution means faster processing
-camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(400, 300))
 
 # set the distance between the edge of the screen
 # and the borders that trigger robot rotation
@@ -34,11 +28,14 @@ side_border_color = (0, 0, 255)
 # give camera time to warm up
 time.sleep(0.1)
 
-motor_controller = MotorController()
+# start video frame capture
+cap = cv.VideoCapture(0)
+cap.set(cv.CAP_PROP_FRAME_WIDTH, 400)
+cap.set(cv.CAP_PROP_FRAME_HEIGHT, 300)
 
-for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    # take the frame as an array, convert it to black and white, and look for facial features
-    image = still.array
+while True:
+    ret, image = cap.read()
+
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     faces = faceCascade.detectMultiScale(
         image,
@@ -49,7 +46,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     )
 
     if len(faces) == 0:
-    	motor_controller.stop()
+        print('no faces found')
 
     # for each face, draw a green rectangle around it and append to the image
     # x-pos, y-pos, width, height
@@ -67,8 +64,6 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             left_motorspeed = ((x - side_borders_distance) * (-100) / (side_borders_distance))
             left_motorspeed = np.clip(left_motorspeed, 35, 80)
             print(left_motorspeed)
-            motor_controller.setmotorspeed(left_motorspeed)
-            motor_controller.movehardleft()
             print('left')
 
         # within the right region
@@ -77,24 +72,17 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             right_motorspeed = (((x + w) - (image.shape[1] - side_borders_distance)) * 100) / side_borders_distance
             right_motorspeed = np.clip(right_motorspeed, 35, 80)
             print(right_motorspeed)
-            motor_controller.setmotorspeed(right_motorspeed)
-            motor_controller.movehardright()
             print('right')
-			
+
         elif (object_in_left_area and object_in_right_area) or not (object_in_left_area and object_in_right_area):
             print('center')
             area = (w ** 2)
             print(area)
             if area > max_face_tracking_area:
                 print('move backward')
-            	motor_controller.setmotorspeed(50)
-            	motor_controller.movebackward()
             elif area < min_face_tracking_area:
                 print('move forward')
-            	motor_controller.setmotorspeed(50)
-            	motor_controller.moveforward()
             else:
-            	motor_controller.stop()                
                 print('stop')
 
     # draw side borders
@@ -103,9 +91,6 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # display the resulting image
     cv.imshow("Display", image)
-
-    # clear the stream capture
-    rawCapture.truncate(0)
 
     # set "q" as the key to exit the program when pressed
     key = cv.waitKey(1) & 0xFF
