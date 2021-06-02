@@ -35,7 +35,7 @@ def getImagesAndLabels(path):
         faces = detector.detectMultiScale(
             img_numpy,
             scaleFactor=1.2,
-            minNeighbors=20,
+            minNeighbors=10,
             minSize=(30, 30),    
         )
 

@@ -24,7 +24,7 @@ while(True):
     faces = face_detector.detectMultiScale(
         gray,
         scaleFactor=1.2,
-        minNeighbors=20,
+        minNeighbors=15,
         minSize=(30, 30),
     )
     for (x, y, w, h) in faces:
@@ -37,7 +37,7 @@ while(True):
 
     cv2.imshow('image', img)
 
-    k = cv2.waitKey(100) & 0xff  # Press 'ESC' for exiting video
+    k = cv2.waitKey(250) & 0xff  # Press 'ESC' for exiting video
     if k == 27:
         break
     elif count >= num_of_images:  # Take 30 face sample and stop video

@@ -24,22 +24,25 @@ while True:
     faces = faceCascade.detectMultiScale(
         gray,
         scaleFactor=1.2,
-        minNeighbors=20,
+        minNeighbors=5,
         minSize=(int(minW), int(minH)),
     )
     for(x, y, w, h) in faces:
         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
         id, confidence = recognizer.predict(gray[y:y+h, x:x+w])
         # Check if confidence is less them 100 ==> "0" is perfect match
+        confidence = 100 - confidence
+        confidence = np.clip(confidence, 0, 100)
+
+        if confidence < 20:
+            break
+
         if (confidence < 100):
             id = names[id]
-            confidence = 100 - confidence
-            confidence = np.clip(confidence, 0, 100)
             confidence = "  {0}%".format(round(confidence))
         else:
             id = "unknown"
-            confidence = 100 - confidence
-            confidence = np.clip(confidence, 0, 100)
+
             confidence = "  {0}%".format(round(confidence))
 
         cv2.putText(img, str(id), (x+5, y-5), font, 1, (255, 255, 255), 2)
