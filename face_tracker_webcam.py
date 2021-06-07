@@ -7,6 +7,8 @@
 import time
 import cv2 as cv
 import numpy as np
+from matplotlib import pyplot as plt
+from numpy.lib.type_check import imag
 
 # point to the haar cascade file in the directory
 cascPath = "./haarcascades/haarcascade_frontalface_default.xml"
@@ -33,12 +35,14 @@ cap = cv.VideoCapture(0)
 cap.set(cv.CAP_PROP_FRAME_WIDTH, 400)
 cap.set(cv.CAP_PROP_FRAME_HEIGHT, 300)
 
+plt.ion()
+
 while True:
     ret, image = cap.read()
-
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
     faces = faceCascade.detectMultiScale(
-        image,
+        gray,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(30, 30),
@@ -90,9 +94,16 @@ while True:
     cv.line(image, (image.shape[1] - side_borders_distance, 0), (image.shape[1] - side_borders_distance, image.shape[0]), side_border_color, 5)
 
     # display the resulting image
-    cv.imshow("Display", image)
+    #cv.imshow("Display", image)
+
+
+    plt.imshow(gray, cmap = 'gray', interpolation = 'bicubic')
+    plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
+    plt.show()
+    plt.pause(0.05)
 
     # set "q" as the key to exit the program when pressed
     key = cv.waitKey(1) & 0xFF
     if key == ord("q"):
+        plt.ioff()
         break

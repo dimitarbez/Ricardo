@@ -44,6 +44,7 @@ side_border_color = (0, 0, 255)
 time.sleep(0.1)
 
 motor_controller = MotorController()
+plt.ion()
 
 for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     # take the frame as an array, convert it to black and white, and look for facial features
@@ -138,11 +139,10 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # display the resulting image
     #cv.imshow("Display", image)
-    plt.ion()
-
-    plt.imshow(image, cmap = 'gray', interpolation = 'bicubic')
+    plt.imshow(gray, cmap = 'gray', interpolation = 'bicubic')
     plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
     plt.show()
+    plt.pause(0.05)
 
     # clear the stream capture
     rawCapture.truncate(0)
