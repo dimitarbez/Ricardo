@@ -44,7 +44,6 @@ side_border_color = (0, 0, 255)
 time.sleep(0.1)
 
 motor_controller = MotorController()
-plt.ion()
 
 for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     # take the frame as an array, convert it to black and white, and look for facial features
@@ -81,8 +80,10 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         if confidence < 100:
             id = names[id]
             confidence = "  {0}%".format(round(confidence))
-
-            if confidence > 20:
+    
+            if confidence > 20 and id == 1:
+            
+                print('Found ' + names[id])
 
                 # within the left region
                 if object_in_left_area and not object_in_right_area:
@@ -139,10 +140,6 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # display the resulting image
     #cv.imshow("Display", image)
-    plt.imshow(gray, cmap = 'gray', interpolation = 'bicubic')
-    plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
-    plt.show()
-    plt.pause(0.05)
 
     # clear the stream capture
     rawCapture.truncate(0)
