@@ -3,6 +3,7 @@ from motorcontroller import MotorController
 import time
 import cv2 as cv
 import numpy as np
+from matplotlib import pyplot as plt
 
 # if using the picamera, import those libraries as well
 from picamera.array import PiRGBArray
@@ -41,7 +42,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     image = still.array
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     faces = faceCascade.detectMultiScale(
-        image,
+        gray,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(30, 30),
@@ -106,12 +107,16 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             (image.shape[1] - side_borders_distance, image.shape[0]), side_border_color, 5)
 
     # display the resulting image
-    cv.imshow("Display", image)
+    #cv.imshow("Display", image)
+
+    plt.imshow(image, cmap = 'gray', interpolation = 'bicubic')
+    plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
+    plt.show()
 
     # clear the stream capture
     rawCapture.truncate(0)
 
     # set "q" as the key to exit the program when pressed
-    key = cv.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
+    #key = cv.waitKey(1) & 0xFF
+    #if key == ord("q"):
+    #    break
