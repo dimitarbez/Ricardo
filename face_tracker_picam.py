@@ -41,6 +41,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # take the frame as an array, convert it to black and white, and look for facial features
     image = still.array
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
     faces = faceCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,

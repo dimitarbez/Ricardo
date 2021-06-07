@@ -3,6 +3,7 @@ from motorcontroller import MotorController
 import time
 import cv2 as cv
 import numpy as np
+from matplotlib import pyplot as plt
 
 # if using the picamera, import those libraries as well
 from picamera.array import PiRGBArray
@@ -48,6 +49,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # take the frame as an array, convert it to black and white, and look for facial features
     image = still.array
     gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
     faces = faceCascade.detectMultiScale(
         gray,
         scaleFactor=1.2,
@@ -126,8 +128,8 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             motor_controller.stop()                
             print('stop')
 
-        cv2.putText(img, str(id), (x+5, y-5), font, 1, (255, 255, 255), 2)
-        cv2.putText(img, str(confidence), (x+5, y+h-5),
+        cv.putText(image, str(id), (x+5, y-5), font, 1, (255, 255, 255), 2)
+        cv.putText(image, str(confidence), (x+5, y+h-5),
                     font, 1, (255, 255, 0), 1)
 
     # draw side borders
@@ -135,7 +137,10 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     cv.line(image, (image.shape[1] - side_borders_distance, 0), (image.shape[1] - side_borders_distance, image.shape[0]), side_border_color, 5)
 
     # display the resulting image
-    cv.imshow("Display", image)
+    #cv.imshow("Display", image)
+    plt.imshow(image, cmap = 'gray', interpolation = 'bicubic')
+    plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
+    plt.show()
 
     # clear the stream capture
     rawCapture.truncate(0)
