@@ -72,6 +72,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         cv.rectangle(image, (x, y), (x+w, y+h), tracked_face_color, 2)
 
         id, confidence = recognizer.predict(gray[y:y+h, x:x+w])
+        confidence = int(confidence)
         # Check if confidence is less them 100 ==> "0" is perfect match
         confidence = 100 - confidence
         confidence = np.clip(confidence, 0, 100)
