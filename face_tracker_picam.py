@@ -14,7 +14,7 @@ faceCascade = cv.CascadeClassifier(cascPath)
 
 # #start the camera and define settings
 camera = PiCamera()
-camera.resolution = (400, 300) #a smaller resolution means faster processing
+camera.resolution = (400, 300)  # a smaller resolution means faster processing
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(400, 300))
 
@@ -49,7 +49,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     )
 
     if len(faces) == 0:
-    	motor_controller.stop()
+        motor_controller.stop()
 
     # for each face, draw a green rectangle around it and append to the image
     # x-pos, y-pos, width, height
@@ -64,7 +64,8 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # within the left region
         if object_in_left_area and not object_in_right_area:
             # interpolate motor speed from left side border to left edge of screen
-            left_motorspeed = ((x - side_borders_distance) * (-100) / (side_borders_distance))
+            left_motorspeed = ((x - side_borders_distance)
+                               * (-100) / (side_borders_distance))
             left_motorspeed = np.clip(left_motorspeed, 35, 80)
             print(left_motorspeed)
             motor_controller.setmotorspeed(left_motorspeed)
@@ -74,32 +75,35 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # within the right region
         elif object_in_right_area and not object_in_left_area:
             # interpolate motor speed from right side border to right edge of screen
-            right_motorspeed = (((x + w) - (image.shape[1] - side_borders_distance)) * 100) / side_borders_distance
+            right_motorspeed = (
+                ((x + w) - (image.shape[1] - side_borders_distance)) * 100) / side_borders_distance
             right_motorspeed = np.clip(right_motorspeed, 35, 80)
             print(right_motorspeed)
             motor_controller.setmotorspeed(right_motorspeed)
             motor_controller.movehardright()
             print('right')
-			
+
         elif (object_in_left_area and object_in_right_area) or not (object_in_left_area and object_in_right_area):
             print('center')
             area = (w ** 2)
             print(area)
             if area > max_face_tracking_area:
                 print('move backward')
-            	motor_controller.setmotorspeed(50)
-            	motor_controller.movebackward()
+                motor_controller.setmotorspeed(50)
+                motor_controller.movebackward()
             elif area < min_face_tracking_area:
                 print('move forward')
-            	motor_controller.setmotorspeed(50)
-            	motor_controller.moveforward()
+                motor_controller.setmotorspeed(50)
+                motor_controller.moveforward()
             else:
-            	motor_controller.stop()                
+                motor_controller.stop()
                 print('stop')
 
     # draw side borders
-    cv.line(image, (side_borders_distance, 0), (side_borders_distance, image.shape[0]), side_border_color, 5)
-    cv.line(image, (image.shape[1] - side_borders_distance, 0), (image.shape[1] - side_borders_distance, image.shape[0]), side_border_color, 5)
+    cv.line(image, (side_borders_distance, 0),
+            (side_borders_distance, image.shape[0]), side_border_color, 5)
+    cv.line(image, (image.shape[1] - side_borders_distance, 0),
+            (image.shape[1] - side_borders_distance, image.shape[0]), side_border_color, 5)
 
     # display the resulting image
     cv.imshow("Display", image)
