@@ -80,7 +80,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         if confidence < 100:
             id = names[id]
-            confidence = "  {0}%".format(round(confidence))
+            #confidence = "  {0}%".format(round(confidence))
     
             if confidence > 20 and id == 1:
             
