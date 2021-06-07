@@ -138,6 +138,8 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # display the resulting image
     #cv.imshow("Display", image)
+    plt.ion()
+
     plt.imshow(image, cmap = 'gray', interpolation = 'bicubic')
     plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
     plt.show()
@@ -146,6 +148,6 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     rawCapture.truncate(0)
 
     # set "q" as the key to exit the program when pressed
-    key = cv.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
+    #key = cv.waitKey(1) & 0xFF
+    #if key == ord("q"):
+    #    break

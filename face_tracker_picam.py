@@ -109,7 +109,7 @@ for still in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # display the resulting image
     #cv.imshow("Display", image)
-
+    plt.ion()
     plt.imshow(image, cmap = 'gray', interpolation = 'bicubic')
     plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
     plt.show()
