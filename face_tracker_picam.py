@@ -24,9 +24,9 @@ side_borders_distance = 150
 
 # face tracking area thresholds are used for forward/backward movement of the robot
 # max square area threshold for face tracking
-max_face_tracking_area = 2000
+max_face_tracking_area = 1600
 # min square area threshold for face tracking
-min_face_tracking_area = 1600
+min_face_tracking_area = 1400
 
 tracked_face_color = (0, 255, 0)
 side_border_color = (0, 0, 255)

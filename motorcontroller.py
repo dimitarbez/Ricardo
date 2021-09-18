@@ -40,33 +40,27 @@ class MotorController:
         self.pwm2.ChangeDutyCycle(self.motorspeed)
 
     def moveforward(self):
-        GPIO.output(motor_in1, GPIO.LOW)
-        GPIO.output(motor_in2, GPIO.HIGH)
-        GPIO.output(motor_in3, GPIO.HIGH)
-        GPIO.output(motor_in4, GPIO.LOW)
-
-    def movebackward(self):
         GPIO.output(motor_in1, GPIO.HIGH)
         GPIO.output(motor_in2, GPIO.LOW)
         GPIO.output(motor_in3, GPIO.LOW)
         GPIO.output(motor_in4, GPIO.HIGH)
 
-    def moveleft(self):
+    def movebackward(self):
         GPIO.output(motor_in1, GPIO.LOW)
         GPIO.output(motor_in2, GPIO.HIGH)
-        GPIO.output(motor_in3, GPIO.LOW)
+        GPIO.output(motor_in3, GPIO.HIGH)
         GPIO.output(motor_in4, GPIO.LOW)
 
-    def moveright(self):
+    def moveleft(self):
         GPIO.output(motor_in1, GPIO.LOW)
         GPIO.output(motor_in2, GPIO.LOW)
-        GPIO.output(motor_in3, GPIO.HIGH)
-        GPIO.output(motor_in4, GPIO.LOW)
+        GPIO.output(motor_in3, GPIO.LOW)
+        GPIO.output(motor_in4, GPIO.HIGH)
 
-    def movehardright(self):
+    def moveright(self):
         GPIO.output(motor_in1, GPIO.HIGH)
         GPIO.output(motor_in2, GPIO.LOW)
-        GPIO.output(motor_in3, GPIO.HIGH)
+        GPIO.output(motor_in3, GPIO.LOW)
         GPIO.output(motor_in4, GPIO.LOW)
 
     def movehardleft(self):
@@ -74,6 +68,12 @@ class MotorController:
         GPIO.output(motor_in2, GPIO.HIGH)
         GPIO.output(motor_in3, GPIO.LOW)
         GPIO.output(motor_in4, GPIO.HIGH)
+
+    def movehardright(self):
+        GPIO.output(motor_in1, GPIO.HIGH)
+        GPIO.output(motor_in2, GPIO.LOW)
+        GPIO.output(motor_in3, GPIO.HIGH)
+        GPIO.output(motor_in4, GPIO.LOW)
 
     def stop(self):
         GPIO.output(motor_in1, GPIO.LOW)

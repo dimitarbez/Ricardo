@@ -157,5 +157,5 @@ try:
 finally:
     curses.nocbreak(); screen.keypad(0); curses.echo()
     curses.endwin()
-    #camera.stop_preview()
+    camera.stop_preview()
     GPIO.cleanup()
