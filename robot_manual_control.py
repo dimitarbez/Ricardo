@@ -3,18 +3,13 @@ import curses
 from datetime import datetime
 from picamera import PiCamera
 from time import sleep
-from motorcontroller import MotorController
+from motor_controller.motorcontroller import MotorController
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(5, GPIO.OUT)
-GPIO.setup(11, GPIO.OUT)
-GPIO.setup(13, GPIO.OUT)
-GPIO.setup(15, GPIO.OUT)
 GPIO.setup(36, GPIO.OUT)
 GPIO.setup(38, GPIO.OUT)
 GPIO.setup(40, GPIO.OUT)
 GPIO.setup(32, GPIO.OUT)
-
 GPIO.setup(37, GPIO.OUT)
 
 ledLights = GPIO.PWM(36, 10000)
