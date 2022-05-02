@@ -2,138 +2,80 @@ import RPi.GPIO as GPIO
 import curses
 from datetime import datetime
 from picamera import PiCamera
-from time import sleep
-from motor_controller.motorcontroller import MotorController
-
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(36, GPIO.OUT)
-GPIO.setup(38, GPIO.OUT)
-GPIO.setup(40, GPIO.OUT)
-GPIO.setup(32, GPIO.OUT)
-GPIO.setup(37, GPIO.OUT)
-
-ledLights = GPIO.PWM(36, 10000)
-servo1 = GPIO.PWM(38, 50)
-servo2 = GPIO.PWM(40, 50)
-
-pwmHorn = GPIO.PWM(37, 1000)
-
-servo1DutyCycle = 6.5
-servo2DutyCycle = 7
-
-cameraMoveIncrement = 0.1
-servoMoveDelay = 0.05
+from motor_controller.motor_controller import MotorController
+from robot_functions.camera_movement_controller import CameraMovementController
+from robot_functions.buzzer_controller import BuzzerController
+from robot_functions.headlights_controller import HeadlightsController
+from robot_functions.laser_controller import LaserController
 
 screen = curses.initscr()
 curses.noecho()
 curses.cbreak()
 screen.keypad(True)    
 
-
-
-def offsetServoCycle(motor1, motor2):
-    global servo1DutyCycle
-    global servo2DutyCycle
-    motorOffset1 = motor1+servo1DutyCycle
-    motorOffset2 = motor2+servo2DutyCycle
-
-    if (motorOffset1 <= 9 and motorOffset2 <= 9.7) and (motorOffset1 >= 2 and motorOffset2 >= 4) :
-        servo1DutyCycle = servo1DutyCycle + motor1
-        servo2DutyCycle = servo2DutyCycle + motor2
-
-        servo1.ChangeDutyCycle(servo1DutyCycle)
-        servo2.ChangeDutyCycle(servo2DutyCycle)
-
-def changeServoCycle(motor1, motor2):
-    global servo1DutyCycle
-    global servo2DutyCycle
-    servo1DutyCycle = motor1
-    servo2DutyCycle = motor2
-    servo1.ChangeDutyCycle(servo1DutyCycle)
-    servo2.ChangeDutyCycle(servo2DutyCycle)
-    
-def disableServos():
-    servo1.ChangeDutyCycle(0)
-    servo2.ChangeDutyCycle(0)
-
 try:
 
-    motorcontroller = MotorController()
+    motor_controller = MotorController()
+    camera_movement_controller = CameraMovementController()
+    buzzer_controller = BuzzerController()
+    headlights_controller = HeadlightsController()
+    laser_controller = LaserController()
 
-    servo1.start(servo1DutyCycle)
-    servo2.start(servo2DutyCycle)
-    disableServos()
-    
     camera = PiCamera()
     camera.rotation = 0
-
     camera.start_preview(fullscreen=False, window=(200,-100,600,800))
-
     
     while True:
         char = screen.getch()
         if char == ord('q'):
-            GPIO.output(5, GPIO.LOW)
-            GPIO.output(11, GPIO.LOW)
-            GPIO.output(13, GPIO.LOW)
-            GPIO.output(15, GPIO.LOW)
+            motor_controller.stop()
             break
         elif char == ord('w'):            
-            motorcontroller.moveforward()
+            motor_controller.moveforward()
         elif char == ord('s'):            
-            motorcontroller.movebackward()
+            motor_controller.movebackward()
         elif char == ord('a'):            
-            motorcontroller.moveleft()
+            motor_controller.moveleft()
         elif char == ord('d'):            
-            motorcontroller.moveright()
+            motor_controller.moveright()
         elif char == ord('e'):            
-            motorcontroller.stop()
+            motor_controller.stop()
         elif char == ord('z'):            
-            motorcontroller.movehardleft()
+            motor_controller.movehardleft()
         elif char == ord('c'):            
-            motorcontroller.movehardright()
+            motor_controller.movehardright()
         elif char == ord('1'):
-            motorcontroller.setmotorspeed(20)
+            motor_controller.setmotorspeed(20)
         elif char == ord('2'):
-            motorcontroller.setmotorspeed(40)
+            motor_controller.setmotorspeed(40)
         elif char == ord('3'):
-            motorcontroller.setmotorspeed(60)
+            motor_controller.setmotorspeed(60)
         elif char == ord('4'):
-            motorcontroller.setmotorspeed(80)
+            motor_controller.setmotorspeed(80)
         elif char == ord('5'):
-            motorcontroller.setmotorspeed(100)
+            motor_controller.setmotorspeed(100)
         elif char == ord(','):
-            motorcontroller.offsetmotorspeed(-5)
+            motor_controller.offsetmotorspeed(-5)
         elif char == ord('.'):
-            motorcontroller.offsetmotorspeed(+5)
+            motor_controller.offsetmotorspeed(+5)
         elif char == ord('h'):
-            pwmHorn.start(50)
+            buzzer_controller.turn_on()
         elif char == ord('j'):
-            pwmHorn.stop()
+            buzzer_controller.turn_off()
         elif char == ord('l'):
-            ledLights.start(25)
+            headlights_controller.turn_on()
         elif char == ord(';'):
-            ledLights.stop()
+            headlights_controller.turn_off()
         elif char == ord('0'):
-            changeServoCycle(6.5, 7)
-            sleep(0.2)            
-            disableServos()
+            camera_movement_controller.center_camera()
         elif char == curses.KEY_UP:
-            offsetServoCycle(cameraMoveIncrement, 0)      
-            sleep(servoMoveDelay)
-            disableServos()
+            camera_movement_controller.move_camera_up()
         elif char == curses.KEY_DOWN:
-            offsetServoCycle(-cameraMoveIncrement, 0)      
-            sleep(servoMoveDelay)
-            disableServos()
+            camera_movement_controller.move_camera_down()
         elif char == curses.KEY_RIGHT:
-            offsetServoCycle(0, -cameraMoveIncrement)      
-            sleep(servoMoveDelay)
-            disableServos()
+            camera_movement_controller.move_camera_right()
         elif char == curses.KEY_LEFT:
-            offsetServoCycle(0, cameraMoveIncrement)      
-            sleep(servoMoveDelay)
-            disableServos()
+            camera_movement_controller.move_camera_left()
         elif char == ord('+'):
             cameraMoveIncrement = 0.05
             camera.zoom = (0.25, 0.25, 0.5, 0.5)
@@ -141,9 +83,9 @@ try:
             cameraMoveIncrement = 0.1
             camera.zoom = (0, 0, 1, 1)
         elif char == ord('i'):
-            GPIO.output(32, GPIO.HIGH)
+            laser_controller.turn_on()
         elif char == ord('o'):        
-            GPIO.output(32, GPIO.LOW)
+            laser_controller.turn_off()
         elif char == ord('t'):
             now = datetime.now()
             dt_string = now.strftime("%d%m%Y-%H%M%S")
