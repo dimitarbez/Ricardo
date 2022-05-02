@@ -13,7 +13,7 @@ class MotorController:
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.motor1_pwm_pin, GPIO.OUT)
         GPIO.setup(self.motor2_pwm_pin, GPIO.OUT)
-        GPIO.setup(self.MotorController.motor_in1, GPIO.OUT)
+        GPIO.setup(self.motor_in1, GPIO.OUT)
         GPIO.setup(self.motor_in2, GPIO.OUT)
         GPIO.setup(self.motor_in3, GPIO.OUT)
         GPIO.setup(self.motor_in4, GPIO.OUT)
