@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from gpio_pin_controller import GPIOPinController
 
+
 class LaserController(GPIOPinController):
     
     def __init__(self, laser_pin: int = 32) -> None:

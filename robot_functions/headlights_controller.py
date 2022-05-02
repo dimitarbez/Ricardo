@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from gpio_pin_controller import GPIOPinController
 
+
 class HeadlightsController(GPIOPinController):
     __headlights_pwm_frequency: 10000
     __headlights_pwm_duty_cycle: 25

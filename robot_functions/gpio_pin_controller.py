@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from abc import ABC, abstractmethod
 
+
 class GPIOPinController(ABC):
 
     _gpio_pin: int

@@ -2,12 +2,13 @@ from time import sleep
 import RPi.GPIO as GPIO
 from camera_movement_interface import CameraMovementInterface
 
+
 class CameraMovementController(CameraMovementInterface):
 
     __servo1_duty_cycle: 6.5
     __servo2_duty_cycle: 7
-    __cameraMoveIncrement: 0.1
-    __servoMoveDelay: 0.05
+    __camera_move_increment: 0.1
+    __servo_move_delay: 0.05
     __servo1_pin: 38
     __servo2_pin: 40
 
@@ -22,26 +23,29 @@ class CameraMovementController(CameraMovementInterface):
         self.__disable_servos()
 
     def move_camera_up(self):
-        self.__move_camera(self.__cameraMoveIncrement, 0)
+        self.__move_camera(self.__camera_move_increment, 0)
 
     def move_camera_down(self):
-        self.__move_camera(-self.__cameraMoveIncrement, 0)    
+        self.__move_camera(-self.__camera_move_increment, 0)    
 
     def move_camera_left(self):
-        self.__move_camera(0, self.__cameraMoveIncrement)    
+        self.__move_camera(0, self.__camera_move_increment)    
 
     def move_camera_right(self):
-        self.__move_camera(0, -self.__cameraMoveIncrement)    
+        self.__move_camera(0, -self.__camera_move_increment)    
 
     def center_camera(self):
         self.__change_servos_duty_cycle(6.5, 7)
 
-    def __move_camera(self, pitch_change:float, yaw_change:float):
+    def set_camera_move_speed(self, camera_move_speed: float):
+        self.__camera_move_increment = camera_move_speed
+
+    def __move_camera(self, pitch_change: float, yaw_change: float):
         self.__offset_servo_cycle(pitch_change, yaw_change)
-        sleep(self.__servoMoveDelay)
+        sleep(self.__servo_move_delay)
         self.__disable_servos()
 
-    def __offset_servo_cycle(self, servo1_offset:float, servo2_offset:float):
+    def __offset_servo_cycle(self, servo1_offset: float, servo2_offset: float):
 
         new_servo1_duty_cycle = servo1_offset + self.__servo1_duty_cycle
         new_servo2_duty_cycle = servo2_offset + self.__servo2_duty_cycle
